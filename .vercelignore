@@ -1,0 +1,11 @@
+infinityfree/
+vps/
+laravel/
+codeigniter/
+php/
+sdk/
+data/
+*.sqlite*
+*.db
+check_qriskuu_cookie.js
+test_live_qriskuu.js
