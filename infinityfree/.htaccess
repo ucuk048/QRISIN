@@ -1,0 +1,20 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Izinkan akses langsung ke file/direktori fisik yang ada (misal pay.php)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Teruskan seluruh rute API dan web ke index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Keamanan OWASP: Larang directory browsing
+Options -Indexes
+
+# Keamanan OWASP: Blokir akses langsung ke database dan file konfigurasi
+<FilesMatch "\.(sqlite|db|json|env|log)$">
+    Require all denied
+</FilesMatch>

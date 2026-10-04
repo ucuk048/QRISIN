@@ -1,0 +1,13 @@
+{
+  "name": "qrispay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-hosted QRIS payment gateway (GoPay Merchant) for Vercel",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": { "qrcode": "^1.5.4" }
+}

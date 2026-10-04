@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  qrispay-web:
+    build: .
+    container_name: qrispay_server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - API_KEY=${API_KEY:-qrispay_secret_key_change_me}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123456}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET:-webhook_secret_change_me}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      - BASE_URL=${BASE_URL:-http://localhost:3000}
+      - PAYMENT_EXPIRY_MINUTES=15
+      - MAX_UNIQUE_OFFSET=999
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  qrispay-worker:
+    build: .
+    container_name: qrispay_worker
+    restart: unless-stopped
+    command: ["node", "worker.js"]
+    environment:
+      - NODE_ENV=production
+      - API_KEY=${API_KEY:-qrispay_secret_key_change_me}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123456}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET:-webhook_secret_change_me}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      - BASE_URL=${BASE_URL:-http://localhost:3000}
+      - WORKER_INTERVAL_MS=12000
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - qrispay-web
